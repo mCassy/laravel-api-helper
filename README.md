@@ -52,6 +52,8 @@ To add [Sunset](https://datatracker.ietf.org/doc/html/rfc8594) and [Deprecation]
 Annotation
 
 ```php
+use Mpokket\APIHelper\Annotations\Deprecation; // DO NOT FORGET TO IMPORT THE ANNOTATION
+
 /**
 * Display a listing of the resource.
 *
