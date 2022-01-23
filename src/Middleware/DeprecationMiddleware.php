@@ -84,15 +84,7 @@ class DeprecationMiddleware
             }
             return $response;
         } catch (ReflectionException|Exception $exception) {
-            if (config('app.env') !== 'production') {
-                $response->header(
-                    'X-Middleware-Exception',
-                    'Deprecation: ' . $exception->getMessage() . '#' . $exception->getLine()
-                );
-            }
-            return $response;
+            return $next($request);
         }
-
-        return $next($request);
     }
 }

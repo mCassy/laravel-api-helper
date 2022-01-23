@@ -18,6 +18,10 @@
         }
     },
     "require-dev": {
-        "laravel/laravel": "^5.8"
+        "laravel/laravel": "^5.8",
+        "phpunit/phpunit": "^7.5"
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit --testdox"
     }
 }
