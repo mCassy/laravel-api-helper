@@ -11,9 +11,22 @@ A set of API tools for Laravel projects
 
 ## Install via composer to the Laravel project
 
-Run composer command
+1. Run composer command
 
 `composer require mpokket/laravel-api-helper`
+
+2. Register the Service Provider
+
+In `config/app.php`, add the service provider to `$providers` array
+
+```php
+
+'providers' => [
+    ...
+    Mpokket\APIHelper\APIHelperServiceProvider::class,
+    ...
+]
+```
 
 # Usage
 
