@@ -84,6 +84,7 @@ Link: https://domain.com/your/next/version/api; rel=alternate, https://domain.co
 
 # Notes
 - [Deprecate](https://tools.ietf.org/id/draft-dalal-deprecation-header-01.html) header IETF proposal is currently in draft status 
+- PHPUnit tests are not done for testing deprecate middleware
 
 # Support
 
