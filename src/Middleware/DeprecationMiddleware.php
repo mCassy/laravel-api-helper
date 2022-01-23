@@ -75,7 +75,7 @@ class DeprecationMiddleware
             }
 
             if ($links) {
-                $response->header('Link', implode(',', $links));
+                $response->header('Link', implode(', ', $links));
             }
 
             if (property_exists($deprecationAnnotation, 'sunset') && $deprecationAnnotation->sunset) {

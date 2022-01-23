@@ -7,16 +7,17 @@ A set of API tools for Laravel projects
 ## Prerequisites
 
  - PHP7.1+
- - Laravel
+ - Laravel project
 
-## Install via composer
+## Install via composer to the Laravel project
 
-- Run composer command
-  - `composer require mpokket/laravel-api-helper`
+Run composer command
+
+`composer require mpokket/laravel-api-helper`
 
 # Usage
 
-To add `Sunset` and `Deprecation` for your APIs, use the following annotations over the API method directly.
+To add [Sunset](https://datatracker.ietf.org/doc/html/rfc8594) and [Deprecation](https://tools.ietf.org/id/draft-dalal-deprecation-header-01.html) for your APIs, use the following annotations over the API method directly.
 
 ## Annotation options
 
@@ -33,10 +34,65 @@ To add `Sunset` and `Deprecation` for your APIs, use the following annotations o
 
 ### Example response header:
 
-> Deprecation: true
+#### Example 1
 
+Annotation
+
+```php
+/**
+* Display a listing of the resource.
+*
+* @Deprecation(since="true"
+*
+* @return \Illuminate\Http\Response
+*/
+public function index()
+{
+    return response('...');
+}
+```
+
+```yaml
+Deprecation: true
+```
+
+
+#### Example 2
+
+Annotation
+
+```php
+/**
+* Display a listing of the resource.
+*
+* @Deprecation(since="31-12-2022", alternate=" https://domain.com/your/next/version/api", policy="https://domain.com/api/deprecation/policy", sunset="01-01-2022")
+*
+* @return \Illuminate\Http\Response
+*/
+public function index()
+{
+    return response('...');
+}
+```
+
+Response headers
+```yaml
+Sunset: Mon, 01 Jan 2022 00:00:00 GMT
+Deprecation: Mon, 31 Dec 2022 00:00:00 GMT
+Link: https://domain.com/your/next/version/api; rel=alternate, https://domain.com/api/deprecation/policy; rel=deprecation
+```
+
+# Notes
+- [Deprecate](https://tools.ietf.org/id/draft-dalal-deprecation-header-01.html) header IETF proposal is currently in draft status 
 
 # Support
 
 If you require any support, kindly use GitHub issue tracker for this project.
 
+## Contributing
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+Please make sure to update tests as appropriate.
+
+## License
+[MIT](README.md)
