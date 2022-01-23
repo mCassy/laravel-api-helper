@@ -1,0 +1,23 @@
+{
+    "name": "mpokket/laravel-api-helper",
+    "description": "A set of API tools for Laravel projects",
+    "type": "library",
+    "require": {
+        "doctrine/annotations": "^1.13"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "bhargav",
+            "email": "bhargav.nanekalva@mpokket.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Mpokket\\APIHelper\\": "src/"
+        }
+    },
+    "require-dev": {
+        "laravel/laravel": "^5.8"
+    }
+}
