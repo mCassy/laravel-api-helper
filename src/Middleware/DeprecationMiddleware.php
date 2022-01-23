@@ -37,6 +37,7 @@ class DeprecationMiddleware
             $rf = new ReflectionClass($controllerClass);
             $methodObj = $rf->getMethod($routeObj->getActionMethod());
             $reader = new AnnotationReader();
+            $deprecationHeaderValue = false;
             $deprecationAnnotation = $reader->getMethodAnnotation(
                 $methodObj,
                 Deprecation::class
@@ -78,7 +79,11 @@ class DeprecationMiddleware
                 $carbon = new Carbon($deprecationAnnotation->sunset);
                 $response->header('Sunset', $carbon->format(DateTime::RFC7231));
             }
-            $response->header('Deprecation', $deprecationHeaderValue);
+            
+            if($deprecationHeaderValue){
+                $response->header('Deprecation', $deprecationHeaderValue);    
+            }
+            
         } catch (ReflectionException|Exception $exception) {
             if (app('env') !== 'production') {
                 $response->header(

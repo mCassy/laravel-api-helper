@@ -57,7 +57,7 @@ use Mpokket\APIHelper\Annotations\Deprecation; // DO NOT FORGET TO IMPORT THE AN
 /**
 * Display a listing of the resource.
 *
-* @Deprecation(since="true"
+* @Deprecation(since="true")
 *
 * @return \Illuminate\Http\Response
 */
