@@ -29,8 +29,8 @@ class DeprecationMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
+        $response = $next($request);
         try {
-            $response = $next($request);
             $routeObj = RouteFacade::getCurrentRoute();
             $controllerObj = $routeObj->controller;
             $controllerClass = get_class($controllerObj);
@@ -47,15 +47,11 @@ class DeprecationMiddleware
                 throw new Exception('Deprecation annotation not found');
             }
             if (property_exists($deprecationAnnotation, 'since') && $deprecationAnnotation->since) {
-                switch ($deprecationAnnotation->since) {
-                    case 'true':
-                    case 1:
-                    case true:
-                        $response->header('Deprecation', 'true');
-                        break;
-                    default:
-                        $carbon = new Carbon($deprecationAnnotation->since);
-                        $response->header('Deprecation', $carbon->format(DateTime::RFC7231));
+                try {
+                    $carbon = new Carbon($deprecationAnnotation->since);
+                    $deprecationHeaderValue = $carbon->format(DateTime::RFC7231);
+                } catch (Exception $exception) {
+                    $deprecationHeaderValue = 'true';
                 }
             }
 
@@ -82,9 +78,15 @@ class DeprecationMiddleware
                 $carbon = new Carbon($deprecationAnnotation->sunset);
                 $response->header('Sunset', $carbon->format(DateTime::RFC7231));
             }
-            return $response;
+            $response->header('Deprecation', $deprecationHeaderValue);
         } catch (ReflectionException|Exception $exception) {
-            return $next($request);
+            if (app('env') !== 'production') {
+                $response->header(
+                    'X-Deprecation-Middleware-Exception',
+                    $exception->getLine() . '#' . $exception->getLine()
+                );
+            }
         }
+        return $response;
     }
 }
