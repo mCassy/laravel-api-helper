@@ -52,12 +52,10 @@ class DeprecationMiddleware
                     case 1:
                     case true:
                         $response->header('Deprecation', 'true');
-                        return $response;
                         break;
                     default:
                         $carbon = new Carbon($deprecationAnnotation->since);
                         $response->header('Deprecation', $carbon->format(DateTime::RFC7231));
-                        return $response;
                 }
             }
 
@@ -83,8 +81,8 @@ class DeprecationMiddleware
             if (property_exists($deprecationAnnotation, 'sunset') && $deprecationAnnotation->sunset) {
                 $carbon = new Carbon($deprecationAnnotation->sunset);
                 $response->header('Sunset', $carbon->format(DateTime::RFC7231));
-                return $response;
             }
+            return $response;
         } catch (ReflectionException|Exception $exception) {
             if (config('app.env') !== 'production') {
                 $response->header(
