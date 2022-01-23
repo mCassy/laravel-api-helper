@@ -10,7 +10,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
 use Closure;
 use Exception;
-use Mpokket\Annotations\Deprecation;
+use Mpokket\APIHelper\Annotations\Deprecation;
 use ReflectionClass;
 use ReflectionException;
 use DateTime;
@@ -37,14 +37,17 @@ class DeprecationMiddleware
             $rf = new ReflectionClass($controllerClass);
             $methodObj = $rf->getMethod($routeObj->getActionMethod());
             $reader = new AnnotationReader();
-            $date = $reader->getMethodAnnotation(
+            $deprecationAnnotation = $reader->getMethodAnnotation(
                 $methodObj,
                 Deprecation::class
             );
             $links = [];
 
-            if ($date->since) {
-                switch ($date) {
+            if (!$deprecationAnnotation) {
+                throw new Exception('Deprecation annotation not found');
+            }
+            if (property_exists($deprecationAnnotation, 'since') && $deprecationAnnotation->since) {
+                switch ($deprecationAnnotation->since) {
                     case 'true':
                     case 1:
                     case true:
@@ -52,24 +55,24 @@ class DeprecationMiddleware
                         return $response;
                         break;
                     default:
-                        $carbon = new Carbon($date->value);
+                        $carbon = new Carbon($deprecationAnnotation->since);
                         $response->header('Deprecation', $carbon->format(DateTime::RFC7231));
                         return $response;
                 }
             }
 
-            if ($date->alternate) {
-                $parsedAlternate = parse_url($date->alternate);
+            if (property_exists($deprecationAnnotation, 'alternate') && $deprecationAnnotation->alternate) {
+                $parsedAlternate = parse_url($deprecationAnnotation->alternate);
                 if ($parsedAlternate) {
-                    $links[] = $date->alternate . '; rel=alternate';
+                    $links[] = $deprecationAnnotation->alternate . '; rel=alternate';
                 }
             }
 
-            if ($date->policy) {
+            if (property_exists($deprecationAnnotation, 'policy') && $deprecationAnnotation->policy) {
                 $response = $next($request);
-                $parsedAlternate = parse_url($date->alternate);
+                $parsedAlternate = parse_url($deprecationAnnotation->policy);
                 if ($parsedAlternate) {
-                    $links[] = $date->policy . '; rel=deprecation';
+                    $links[] = $deprecationAnnotation->policy . '; rel=deprecation';
                 }
             }
 
@@ -77,13 +80,19 @@ class DeprecationMiddleware
                 $response->header('Link', implode(',', $links));
             }
 
-            if ($date->sunset) {
-                $carbon = new Carbon($date->sunset);
+            if (property_exists($deprecationAnnotation, 'sunset') && $deprecationAnnotation->sunset) {
+                $carbon = new Carbon($deprecationAnnotation->sunset);
                 $response->header('Sunset', $carbon->format(DateTime::RFC7231));
                 return $response;
             }
         } catch (ReflectionException|Exception $exception) {
-            // do nothing
+            if (config('app.env') !== 'production') {
+                $response->header(
+                    'X-Middleware-Exception',
+                    'Deprecation: ' . $exception->getMessage() . '#' . $exception->getLine()
+                );
+            }
+            return $response;
         }
 
         return $next($request);
