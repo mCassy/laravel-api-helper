@@ -31,6 +31,11 @@ To add `Sunset` and `Deprecation` for your APIs, use the following annotations o
 */
 ```
 
+### Example response header:
+
+> Deprecation: true
+
+
 # Support
 
 If you require any support, kindly use GitHub issue tracker for this project.
