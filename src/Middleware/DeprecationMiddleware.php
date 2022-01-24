@@ -50,9 +50,9 @@ class DeprecationMiddleware
             if (property_exists($deprecationAnnotation, 'since') && $deprecationAnnotation->since) {
                 try {
                     $carbon = new Carbon($deprecationAnnotation->since);
-                    $deprecationHeaderValue = $carbon->format(DateTime::RFC7231);
+                    $response->header('Deprecation', $carbon->format(DateTime::RFC7231));
                 } catch (Exception $exception) {
-                    $deprecationHeaderValue = 'true';
+                    $response->header('Deprecation', 'true');
                 }
             }
 
@@ -64,7 +64,6 @@ class DeprecationMiddleware
             }
 
             if (property_exists($deprecationAnnotation, 'policy') && $deprecationAnnotation->policy) {
-                $response = $next($request);
                 $parsedAlternate = parse_url($deprecationAnnotation->policy);
                 if ($parsedAlternate) {
                     $links[] = $deprecationAnnotation->policy . '; rel=deprecation';
@@ -78,10 +77,6 @@ class DeprecationMiddleware
             if (property_exists($deprecationAnnotation, 'sunset') && $deprecationAnnotation->sunset) {
                 $carbon = new Carbon($deprecationAnnotation->sunset);
                 $response->header('Sunset', $carbon->format(DateTime::RFC7231));
-            }
-            
-            if($deprecationHeaderValue){
-                $response->header('Deprecation', $deprecationHeaderValue);    
             }
             
         } catch (ReflectionException|Exception $exception) {
