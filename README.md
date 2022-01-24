@@ -11,11 +11,11 @@ A set of API tools for Laravel projects
 
 ## Install via composer to the Laravel project
 
-1. Run composer command
+- Run composer command
 
 `composer require mpokket/laravel-api-helper`
 
-2. Register the Service Provider
+- Register the Service Provider
 
 In `config/app.php`, add the service provider to `$providers` array
 
@@ -30,7 +30,9 @@ In `config/app.php`, add the service provider to `$providers` array
 
 # Usage
 
-To add [Sunset](https://datatracker.ietf.org/doc/html/rfc8594) and [Deprecation](https://tools.ietf.org/id/draft-dalal-deprecation-header-01.html) for your APIs, use the following annotations over the API method directly.
+To add [Sunset](https://datatracker.ietf.org/doc/html/rfc8594) and 
+[Deprecation](https://tools.ietf.org/id/draft-dalal-deprecation-header-01.html) for your APIs, use the following 
+annotations over the API method directly.
 
 ## Annotation options
 
@@ -57,7 +59,9 @@ use Mpokket\APIHelper\Annotations\Deprecation; // DO NOT FORGET TO IMPORT THE AN
 /**
 * Display a listing of the resource.
 *
-* @Deprecation(since="true")
+* @Deprecation(since="true") // or
+* @Deprecation(since=true) // or
+* @Deprecation(since="01-01-2023")
 *
 * @return \Illuminate\Http\Response
 */
@@ -77,10 +81,14 @@ Deprecation: true
 Annotation
 
 ```php
+
+use Mpokket\APIHelper\Annotations\Deprecation; // DO NOT FORGET TO IMPORT THE ANNOTATION
+
 /**
 * Display a listing of the resource.
 *
-* @Deprecation(since="31-12-2022", alternate=" https://domain.com/your/next/version/api", policy="https://domain.com/api/deprecation/policy", sunset="01-01-2022")
+* @Deprecation(since="31-12-2022", alternate=" https://domain.com/your/next/version/api", 
+*     policy="https://domain.com/api/deprecation/policy", sunset="01-01-2022")
 *
 * @return \Illuminate\Http\Response
 */
@@ -98,8 +106,14 @@ Link: https://domain.com/your/next/version/api; rel=alternate, https://domain.co
 ```
 
 # Notes
-- [Deprecate](https://tools.ietf.org/id/draft-dalal-deprecation-header-01.html) header IETF proposal is currently in draft status 
+- [Deprecate](https://tools.ietf.org/id/draft-dalal-deprecation-header-01.html) header IETF proposal is currently in 
+draft status
 - PHPUnit tests are not done for testing deprecate middleware
+
+# Debug
+
+On non-production environment, if there's any exception from the middleware, there will be a response header that 
+points to the exception and line number. Use this while reporting issues along with your controller method annotation.
 
 # Support
 
