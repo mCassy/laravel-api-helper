@@ -1,6 +1,6 @@
-# laravel-api-helper
+# Laravel API Helper
 
-A set of API tools for Laravel projects
+A set of API tools for Laravel projects.
 
 # Installation
 
@@ -27,6 +27,15 @@ In `config/app.php`, add the service provider to `$providers` array
     ...
 ]
 ```
+
+## APIHelperServiceProvider
+
+APIHelperServiceProvider provides **Mpokket\APIHelper\Annotations\Deprecation** Annotation for your API methods which 
+supports the following IETF RFCs,
+
+- RFC8594 - **The Sunset HTTP Header Field**
+- Internet Draft draft-dalal-deprecation-header-01 - **The Deprecation HTTP Header Field**
+
 
 # Usage
 
